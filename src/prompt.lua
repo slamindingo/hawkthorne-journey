@@ -1,6 +1,13 @@
 local Board = require "board"
 local Prompt = {}
-local font = love.graphics.newFont(12)
+
+local arial = love.graphics.newImage("arialfont.png")
+arial:setFilter('nearest', 'nearest')
+
+local font = love.graphics.newImageFont(arial,
+    " abcdefghijklmnopqrstuvwxyz" ..
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ0" ..
+    "123456789.,!?-+/:;%&`'*#=\"", 12)
 
 Prompt.__index = Prompt
 ---

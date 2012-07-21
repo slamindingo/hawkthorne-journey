@@ -35,16 +35,23 @@ function Painting:draw()
     end
 
     if self.prompt then
-        self.prompt:draw(self.x + 78, self.y + 100)
+        self.prompt:draw(self.x + 78, self.y - 35)
     end
 end
 
 function Painting:keypressed(key, player)
-    if key == 'rshift' or key == 'lshift' then
+    if (key == 'rshift' or key == 'lshift')
+        and (self.prompt == nil or not self.prompt.hide) then
+        player.freeze = true
         self.prompt = Prompt.new(120, 55, "Straigthen masterpiece?", function(result)
             player.painting_fixed = result
+            player.freeze = false
             self.fixed = result
         end)
+    end
+
+    if self.prompt then
+        self.prompt:keypressed(key)
     end
 end
 
