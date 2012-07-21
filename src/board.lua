@@ -37,8 +37,9 @@ end
 
 function Board:update(dt)
     -- Hide the board when it isn't opened and finished animating
-    if self.width == self.targetWidth and self.height == self.targetHeight
-        and not self.hide and not self.opened then
+    self.done = self.width == self.targetWidth and self.height == self.targetHeight
+
+    if self.done and not self.hide and not self.opened then
         self.hide = true
     end
 

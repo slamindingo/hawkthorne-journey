@@ -1,20 +1,48 @@
-local Board = require "board"
-local b = Board.new(175, 45)
-love.graphics.setBackgroundColor(255, 255, 255)
+local Prompt = require "prompt"
+local b = nil
 
 function love.update(dt)
-    b:update(dt)
+    if b then
+        b:update(dt)
+    end
 end
 
+
+function love.load()
+    love.graphics.setBackgroundColor(255, 255, 255)
+    love.graphics.setDefaultImageFilter('nearest', 'nearest')
+
+    local font = love.graphics.newImage("imagefont.png")
+    font:setFilter('nearest', 'nearest')
+
+    love.graphics.setFont(love.graphics.newImageFont(font,
+    " abcdefghijklmnopqrstuvwxyz" ..
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ0" ..
+    "123456789.,!?-+/:;%&`'*#=\""), 35)
+end
+
+
+
 function love.draw()
-    b:draw(100, 100)
+    if b then
+        b:draw(100, 100)
+    end
 end
 
 function love.keypressed(key)
-    if b.opened then
-        b:close()
-    else
-        b:open()
+    if key == ' ' then
+        b = Prompt.new(120, 55, 'Straigthen masterpiece?', function(result)
+            if result then
+                print('YES')
+            else
+                print('NO')
+            end
+        end)
+        return
+    end
+
+    if b then
+        b:keypressed(key)
     end
 end
 
