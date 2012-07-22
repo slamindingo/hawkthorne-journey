@@ -1,3 +1,13 @@
+local Gamestate = require 'vendor/gamestate'
+local state = require 'loader'
+
+state.switch = function(self)
+    local w = Gamestate.get('select')
+    w:init()
+    Gamestate.switch('town', w:wardrobe():newCharacter())
+end
+
+-- COPY OF MAIN.lua
 -- will hold the currently playing sources
 local sources = {}
 
@@ -105,4 +115,5 @@ function love.draw()
 
     love.graphics.print(love.timer.getFPS() .. ' FPS', 10, 10)
 end
+
 

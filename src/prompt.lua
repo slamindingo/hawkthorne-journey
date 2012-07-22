@@ -1,13 +1,6 @@
 local Board = require "board"
+local window = require "window"
 local Prompt = {}
-
-local arial = love.graphics.newImage("arialfont.png")
-arial:setFilter('nearest', 'nearest')
-
-local font = love.graphics.newImageFont(arial,
-    " abcdefghijklmnopqrstuvwxyz" ..
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZ0" ..
-    "123456789.,!?-+/:;%&`'*#=\"", 12)
 
 Prompt.__index = Prompt
 ---
@@ -36,7 +29,7 @@ function Prompt:draw(x, y)
     end
 
     local oldFont = love.graphics.getFont()
-    love.graphics.setFont(font)
+    love.graphics.setFont(window.font)
 
     self.board:draw(x, y)
     if self.board.done then

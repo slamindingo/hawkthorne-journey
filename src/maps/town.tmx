@@ -46,6 +46,7 @@
     <property name="level" value="house"/>
    </properties>
   </object>
+  <object type="hilda" x="144" y="216" width="24" height="48"/>
  </objectgroup>
  <objectgroup name="floor" width="60" height="14">
   <object x="0" y="264" width="1440" height="168"/>
