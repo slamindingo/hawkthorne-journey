@@ -47,6 +47,12 @@ function Menu:update(dt)
     if not self.active then
         return
     end
+
+    if self.closing and self.animation.position == 1 then
+        self.active = false
+        self.closing = false
+    end
+
     self.animation:update(dt)
 end
 
@@ -56,6 +62,10 @@ function Menu:draw(x, y)
     end
 
     self.animation:draw(menuImage, x + 3, y + 4)
+
+    if self.animation.position < 5 then
+        return
+    end
 
     local oldFont = love.graphics.getFont()
     love.graphics.setFont(window.font)
@@ -76,12 +86,15 @@ function Menu:draw(x, y)
 end
 
 function Menu:open()
+    self.animation:gotoFrame(1)
+    self.animation.direction = 1
     self.active = true
     self.choice = 1
 end
 
 function Menu:close()
-    self.active = false
+    self.animation.direction = -1
+    self.closing = true
 end
 
 
