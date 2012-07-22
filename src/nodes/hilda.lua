@@ -1,6 +1,8 @@
 local anim8 = require 'vendor/anim8'
 local Helper = require 'helper'
+local Dialog = require 'dialog'
 local window = require "window"
+
 local heartImage = love.graphics.newImage('images/heart.png')
 local menuImage = love.graphics.newImage('images/hilda_menu.png')
 local h = anim8.newGrid(69, 43, menuImage:getWidth(), menuImage:getHeight())
@@ -9,15 +11,25 @@ local Menu = {}
 Menu.__index = Menu
 
 local menuDefinition = {
-    { ['text']='talk', ['option']='foobar' },
+    { ['text']='talk', ['option']={
+        { ['text']='stand aside' },
+        { ['text']='madam, i am on a quest' },
+        { ['text']='i will wear your skin' },
+        { ['text']='i am done with you' },
+    }},
     { ['text']='command' },
     { ['text']='inventory' },
     { ['text']='exit' },
 }
 
+local responses = {
+    ['madam, i am on a quest']='I have information on many topics...',
+}
+
 function Menu.new(items)
    	local menu = {}
 	setmetatable(menu, Menu)
+    menu.rootItems = items
     menu.items = items
     menu.active = false
     menu.itemWidth = 150
@@ -27,23 +39,37 @@ function Menu.new(items)
 end
 
 function Menu:keypressed(key, player)
+    if self.dialog and not self.active then
+        self.dialog:keypressed('return')
+        self:open()
+    end
+
+    if not self.active then
+        return
+    end
+
     if key == 'w' or key == 'up' then
         self.choice = math.max(1, self.choice - 1)
     elseif key == 's' or key == 'down' then
         self.choice = math.min(4, self.choice + 1)
     elseif key == 'return' then
         local item  = self.items[self.choice]
-        if item.text == 'exit' then
+        if item.text == 'exit' or item.text == 'i am done with you' then
             self:close()
             player.freeze = false
-        else
-            print(item.option)
+        elseif responses[item.text] then
+            self:close()
+            self.dialog = Dialog.new(115, 50, responses[item.text])
+        elseif type(item.option) == 'table' then
+            self.items = item.option
         end
     end
 end
 
 
 function Menu:update(dt)
+    if self.dialog then self.dialog:update(dt) end
+
     if not self.active then
         return
     end
@@ -57,6 +83,8 @@ function Menu:update(dt)
 end
 
 function Menu:draw(x, y)
+    if self.dialog then self.dialog:draw(x, y) end
+
     if not self.active then
         return
     end
@@ -88,6 +116,7 @@ end
 function Menu:open()
     self.animation:gotoFrame(1)
     self.animation.direction = 1
+    self.items = self.rootItems
     self.active = true
     self.choice = 1
 end

@@ -21,6 +21,10 @@ end
 
 function Prompt:update(dt)
     self.board:update(dt)
+    if self.board.done and self.callback and not self.called then
+        self.called = true
+        self.callback(self.result)
+    end
 end
 
 function Prompt:draw(x, y)
@@ -63,9 +67,6 @@ function Prompt:keypressed(key)
 
     if key == 'return' then
         self.board:close()
-        if self.callback then
-            self.callback(self.result)
-        end
         return
     end
 
