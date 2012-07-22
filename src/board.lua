@@ -11,26 +11,24 @@ local rate = 900
 function Board.new(width, height)
     local board = {}
     setmetatable(board, Board)
-    board.opened = false
+    board.state = 'closed'
     board.width = 6
     board.height = 6
     board.targetWidth = 6
     board.targetHeight = 6
     board.maxWidth = width
     board.maxHeight = height
-    board.hide = true
     return board
 end
 
 function Board:open()
-    self.opened = true
-    self.hide = false
+    self.state = 'opening'
     self.targetWidth = self.maxWidth
     self.targetHeight = self.maxHeight
 end
 
 function Board:close()
-    self.opened = false
+    self.state = 'closing'
     self.targetWidth = 6
     self.targetHeight= 6
 end
@@ -39,11 +37,15 @@ function Board:update(dt)
     -- Hide the board when it isn't opened and finished animating
     self.done = self.width == self.targetWidth and self.height == self.targetHeight
 
-    if self.done and not self.hide and not self.opened then
-        self.hide = true
+    if self.done and self.state == 'closing' then
+        self.state = 'closed'
     end
 
-    if self.opened then
+    if self.done and self.state == 'opening' then
+        self.state = 'opened'
+    end
+
+    if self.state == 'opened' or self.state == 'opening' then
         if self.height == self.targetHeight then
             self.width = math.min(self.targetWidth, self.width + dt * rate)
         else
@@ -59,7 +61,7 @@ function Board:update(dt)
 end
 
 function Board:draw(x, y)
-    if self.hide then
+    if self.state == 'closed' then
         return
     end
 
