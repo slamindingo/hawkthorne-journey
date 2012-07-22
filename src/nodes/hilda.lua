@@ -291,11 +291,12 @@ function Menu.new(items)
 end
 
 function Menu:keypressed(key, player)
-    if self.dialog and self.state == 'closed' and key == 'return' then
+    if self.dialog and (self.state == 'closed' or self.state == 'hidden')
+        and key == 'return' then
         self.dialog:keypressed('return')
     end
 
-    if self.state == 'closed' then
+    if self.state == 'closed' or self.state == 'hidden' then
         return
     end
 
@@ -318,7 +319,7 @@ function Menu:keypressed(key, player)
             self:close()
             player.freeze = false
         elseif responses[item.text] then
-            self:close()
+            self:hide()
             if item.option then 
                 self.items = item.option
                 self.choice = 4
@@ -334,9 +335,13 @@ end
 
 
 function Menu:update(dt)
-    if self.state == 'closed' then
+    if self.state == 'closed' or self.state == 'hidden' then
         if self.dialog then self.dialog:update(dt) end
         return
+    end
+
+    if self.state == 'hiding' and self.animation.position == 1 then
+        self.state = 'hidden'
     end
 
     if self.state == 'closing' and self.animation.position == 1 then
@@ -347,7 +352,7 @@ function Menu:update(dt)
 end
 
 function Menu:draw(x, y)
-    if self.state == 'closed' then
+    if self.state == 'closed' or self.state == 'hidden' then
         if self.dialog then self.dialog:draw(x, y) end
         return
     end
@@ -397,6 +402,12 @@ function Menu:show()
     self.animation:gotoFrame(1)
 end
 
+function Menu:hide()
+    self.animation.direction = -1
+    self.state = 'hiding'
+end
+
+
 function Menu:close()
     self.animation.direction = -1
     self.state = 'closing'
@@ -413,26 +424,65 @@ function Hilda.new(node, collider)
 	local hilda = {}
 	setmetatable(hilda, Hilda)
 	hilda.image = hildaImage
-    hilda.animation = anim8.newAnimation('once', g(1,1), 1)
+    hilda.animations = {
+        walking = {
+            right = anim8.newAnimation('loop', g('1-3,1'), .18),
+            left = anim8.newAnimation('loop', g('1-3,2'), .18),
+        },
+        standing = {
+            right = anim8.newAnimation('loop', g('1,1', '10,1'), 2, {[2]=.1}),
+            left = anim8.newAnimation('loop', g('1,2', '10,2'), 2, {[2]=.1}),
+        },
+        talking = {
+            right = anim8.newAnimation('loop', g('1,1', '11,1'), .8, {[2]=.3}),
+            left = anim8.newAnimation('loop', g('1,2', '11,2'), .8, {[2]=.3}),
+        },
+    }
 
 	hilda.bb = collider:addRectangle(node.x, node.y, node.width, node.height)
 	hilda.bb.node = hilda
     hilda.collider = collider
 	hilda.collider:setPassive(hilda.bb)
+    hilda.state = 'walking'
+    hilda.direction = 'right'
 
-	hilda.position = { x = node.x, y = node.y }
+    hilda.width = node.width
+    hilda.height = node.height
+	hilda.position = { x = node.x + 12, y = node.y }
+	hilda.maxx = node.x + 48
+	hilda.minx = node.x - 48
     hilda.menu = Menu.new(menuDefinition)
 	return hilda
 end
 
 function Hilda:draw()
-	self.animation:draw(self.image, self.position.x, self.position.y)
+    local animation = self.animations[self.state][self.direction]
+	animation:draw(self.image, math.floor(self.position.x), self.position.y)
     self.menu:draw(self.position.x, self.position.y - 50)
 end
 
 function Hilda:update(dt, player)
-	--Helper.moveBoundingBox(self)
-    if self.menu.state == 'closed' or self.menu.dialog then
+    local animation = self.animations[self.state][self.direction]
+    animation:update(dt)
+
+    if self.position.x > self.maxx then
+        self.direction = 'left'
+    elseif self.position.x < self.minx then
+        self.direction = 'right'
+    end
+
+    local direction = self.direction == 'right' and 1 or -1
+
+    if self.state == 'walking' then
+        self.position.x = self.position.x + 18 * dt * direction
+	    Helper.moveBoundingBox(self)
+    elseif self.menu.dialog == nil or self.menu.dialog.state == 'closed' then
+        self.state = 'standing'
+    else
+        self.state = 'talking'
+    end
+
+    if self.menu.state == 'closed' then
         self.state = 'walking'
     end
 
@@ -444,7 +494,14 @@ function Hilda:keypressed(key, player)
     if (key == 'rshift' or key == 'lshift') and self.state ~= 'talking' then
         player.freeze = true
         player.state = 'idle'
-        self.state = 'talking'
+        self.state = 'standing'
+
+        if player.position.x < self.position.x then
+            self.direction = 'left'
+        else
+            self.direciton = 'right'
+        end
+
         self.menu:open()
     end
 

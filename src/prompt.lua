@@ -21,14 +21,14 @@ end
 
 function Prompt:update(dt)
     self.board:update(dt)
-    if self.board.done and self.callback and not self.called then
+    if self.board.state == 'closed' and self.callback and not self.called then
         self.called = true
         self.callback(self.result)
     end
 end
 
 function Prompt:draw(x, y)
-    if self.board.hide then
+    if self.board.state == 'closed' then
         return
     end
 
@@ -36,7 +36,8 @@ function Prompt:draw(x, y)
     love.graphics.setFont(window.font)
 
     self.board:draw(x, y)
-    if self.board.done then
+
+    if self.board.state == 'opened' then
         local ox = math.floor(x - self.board.width / 2 + 5)
         local oy = math.floor(y - self.board.height / 2 + 5)
         love.graphics.printf(self.message, ox, oy, self.board.width - 10)
@@ -61,7 +62,7 @@ function Prompt:draw(x, y)
 end
 
 function Prompt:keypressed(key)
-    if self.board.hide then
+    if self.board.state == 'closed' then
         return
     end
 

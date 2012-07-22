@@ -41,7 +41,7 @@ end
 
 function Painting:keypressed(key, player)
     if (key == 'rshift' or key == 'lshift')
-        and (self.prompt == nil or not self.prompt.hide) then
+        and (self.prompt == nil or self.prompt.state ~= 'closed') then
         player.freeze = true
         self.prompt = Prompt.new(120, 55, "Straigthen masterpiece?", function(result)
             player.painting_fixed = result
