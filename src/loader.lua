@@ -4,7 +4,6 @@ local window = require 'window'
 local state = Gamestate.new()
 
 local home = require 'menu'
-local nextState = 'home'
 
 function state:init()
     state.finished = false
@@ -70,6 +69,18 @@ function state:init()
     table.insert(state.assets, function()
         Gamestate.load('overworld', require 'overworld')
     end)
+	
+	table.insert(state.assets, function()
+        Gamestate.load('RANDTEST1', Level.new('RANDTEST1.tmx'))
+    end)
+	
+	table.insert(state.assets, function()
+        Gamestate.load('RANDTEST2', Level.new('RANDTEST2.tmx'))
+    end)
+	
+	table.insert(state.assets, function()
+        Gamestate.load('RANDTEST3', Level.new('RANDTEST3.tmx'))
+    end)
 
     table.insert(state.assets, function()
         Gamestate.load('credits', require 'credits')
@@ -129,12 +140,9 @@ function state:update(dt)
 end
 
 function state:switch()
-    Gamestate.switch(nextState)
+    Gamestate.switch('home')
 end
 
-function state:target(state)
-    nextState = state
-end
 
 function state:draw()
     love.graphics.rectangle('line', 

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="35" height="11" tilewidth="24" tileheight="24">
+ <tileset firstgid="1" name="forest2" tilewidth="24" tileheight="24">
+  <image source="forest2.png" width="216" height="144"/>
+ </tileset>
+ <tileset firstgid="55" name="RANDTEST1" tilewidth="24" tileheight="24">
+  <image source="RANDTEST1.png" width="48" height="48"/>
+ </tileset>
+ <tileset firstgid="59" name="RANDTEST2" tilewidth="24" tileheight="24">
+  <image source="RANDTEST2.png" width="48" height="48"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="35" height="11">
+  <data encoding="base64" compression="zlib">
+   eJyzY2BgsBkE2I6BocFuELhj1C1Dyy3Wg8gttoPELdbQcBkM2HYUD3oMACNqXh8=
+  </data>
+ </layer>
+ <objectgroup color="#55007f" name="Nodes" width="35" height="11">
+  <object x="24" y="168" width="24"/>
+  <object type="Door" x="24" y="120" width="24" height="48">
+   <properties>
+    <property name="Reenter" value="true"/>
+    <property name="level" value="Greendale-exterior"/>
+   </properties>
+  </object>
+  <object type="Entrance" x="792" y="120" width="24" height="48"/>
+ </objectgroup>
+ <objectgroup name="Floor" width="35" height="11">
+  <object type="Floor" x="0" y="168" width="840" height="96"/>
+ </objectgroup>
+</map>
