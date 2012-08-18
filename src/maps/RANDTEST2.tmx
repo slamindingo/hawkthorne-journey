@@ -9,22 +9,21 @@
  <tileset firstgid="59" name="RANDTEST2" tilewidth="24" tileheight="24">
   <image source="RANDTEST2.png" width="48" height="48"/>
  </tileset>
- <layer name="Tile Layer 1" width="35" height="11">
+ <layer name="background" width="35" height="11">
   <data encoding="base64" compression="zlib">
    eJyzY2BgsBkE2I6BocFuELhj1C1Dyy3Wg8gttoPELdbQcBkM2HYUD3oMACNqXh8=
   </data>
  </layer>
- <objectgroup color="#55007f" name="Nodes" width="35" height="11">
-  <object x="24" y="168" width="24"/>
-  <object type="Door" x="24" y="120" width="24" height="48">
+ <objectgroup color="#55007f" name="nodes" width="35" height="11">
+  <object type="door" x="24" y="120" width="24" height="48">
    <properties>
-    <property name="Reenter" value="true"/>
-    <property name="level" value="Greendale-exterior"/>
+    <property name="reenter" value="true"/>
+    <property name="level" value="RANDTEST3"/>
    </properties>
   </object>
-  <object type="Entrance" x="792" y="120" width="24" height="48"/>
+  <object type="entrance" x="792" y="120" width="24" height="48"/>
  </objectgroup>
- <objectgroup name="Floor" width="35" height="11">
-  <object type="Floor" x="0" y="168" width="840" height="96"/>
+ <objectgroup name="floor" width="35" height="11">
+  <object type="floor" x="0" y="168" width="840" height="96"/>
  </objectgroup>
 </map>

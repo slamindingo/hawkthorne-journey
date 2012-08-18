@@ -48,6 +48,11 @@
     <property name="level" value="deans-office-1"/>
    </properties>
   </object>
+  <object type="door" x="333" y="286" width="27" height="48">
+   <properties>
+    <property name="level" value="RANDTEST1"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup color="#a40098" name="platform" width="220" height="18">
   <object x="226" y="240" width="37" height="15"/>
